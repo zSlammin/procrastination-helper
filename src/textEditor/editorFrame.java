@@ -166,6 +166,6 @@ public class editorFrame extends JFrame {
 		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(close);
 	}
 	private void setUpEvents(){
-		_textArea
+		
 	}
 }
