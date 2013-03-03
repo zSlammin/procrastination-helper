@@ -6,40 +6,37 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
-public class editorFrame extends JFrame {
+public class EditorFrame extends JFrame {
 	private JTextArea _textArea;
 	private JFileChooser _choose;
 	private File _currentFile;
 	private ActionListener _a;
-	private Event _nextEvent;
-	public editorFrame(){
+	public EditorFrame(){
 		setUpEditor();
-		setUpEvents();
 	}
 	/*
 	 * This method sets up the Text Editor plus basic functionality including saving and loading
 	 * .txt files
 	 */
 	private void setUpEditor(){
+		//set JFrame stuff up
 		this.setTitle("Text Edit");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(null);
 		
 		_choose = new JFileChooser();
 		//instantiate panel and set size
-		//can use setMinSize/MaxSize on both Panel and JFrame
 		JPanel panel = new JPanel();
 		Dimension panelSize = new Dimension(600,400);
 		panel.setPreferredSize(panelSize);
 		this.setContentPane(panel);
-		
-		//set up JFrame
-		
+			
 		//set up menu bar
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("file");
 		JMenu edit = new JMenu("edit");
 		
+		//add buttons to various menu bar things (JMenu)
 		JMenuItem newFile = new JMenuItem("new");
 		JMenuItem open = new JMenuItem("open");
 		JMenuItem save = new JMenuItem("save");
@@ -47,15 +44,20 @@ public class editorFrame extends JFrame {
 		JMenuItem exit = new JMenuItem("exit");
 		JMenuItem delay = new JMenuItem("delay");
 		
+		//put everything together
+		//file
 		menuBar.add(file);
 		file.add(newFile);
 		file.add(open);
 		file.add(save);
 		file.add(saveAs);
 		file.add(exit);
+		//edit
 		menuBar.add(edit);
 		edit.add(delay);
 		
+		//add action listeners to everything
+		//open file
 		open.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int openResult = _choose.showOpenDialog(null);
@@ -65,6 +67,7 @@ public class editorFrame extends JFrame {
 			}
 			
 		});
+		//save file
 		save.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(_currentFile==null){
@@ -78,6 +81,7 @@ public class editorFrame extends JFrame {
 			}
 			
 		});
+		//saveAs
 		saveAs.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				int saveResult = _choose.showSaveDialog(null);
@@ -88,6 +92,7 @@ public class editorFrame extends JFrame {
 			}
 			
 		});
+		//new File
 		newFile.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				_textArea.setText("");
@@ -95,32 +100,39 @@ public class editorFrame extends JFrame {
 				setTitle("Text Editor");
 			}
 		});
+		// exit
 		exit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				closeWindow();
 			}
 		});
+		//button I put in to test pop up events- will NOT be in final code
 		delay.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				_a = new ActionListener(){
 					public void actionPerformed(ActionEvent e){
 						System.out.print("new popup even\n");
-						new PopUp();
+						//creepy laugh from http://soundbible.com/2052-Creepy-Laugh.html= public domain
+						new SoundClipPlayer("Creepy-Laugh.wav");
+						new PopUp("title", "contents", "plzdontleave");
 					}
 				};
-				new Event(2000, _a);
+				new EventTimer(2000, _a);
 				
 			}
 		});
+		//finally add the menubar
+		this.setJMenuBar(menuBar);
+		//set up the JTextArea, in which the text will be typed
 		_textArea = new JTextArea(15, 40);
 		_textArea.setLineWrap(true);
 		_textArea.setWrapStyleWord(true);
 		Dimension textASize = _textArea.getPreferredSize();
 		_textArea.setBounds(0, 0, textASize.width, textASize.height);
+		//make a scrolling pane to hold the text area and add it to the JFrame
 		JScrollPane scroll = new JScrollPane(_textArea);
-		
-		this.setJMenuBar(menuBar);
 		panel.add(scroll, BorderLayout.CENTER);
+		//pack and set visible
 		this.pack(); //Fit's JFrame to content.
 		this.setVisible(true);
 	}
@@ -165,7 +177,5 @@ public class editorFrame extends JFrame {
 		WindowEvent close = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(close);
 	}
-	private void setUpEvents(){
-		
-	}
+
 }
